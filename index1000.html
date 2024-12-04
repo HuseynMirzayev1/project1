@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск компьютеров</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            /* display: flex; */
+            /* justify-content: center; */
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+        }
+        .container {
+            display: flex;
+            margin-top: 10px;
+        }
+        #search-container {
+            display: flex;
+            flex-direction: column;
+            margin-right: 20px;
+        }
+        #search-container input {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            width: 200px;
+        }
+        .brand {
+            background-color: #ffffff;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            text-align: center;
+            font-weight: bold;
+           
+        }
+        .brand:hover {
+            background-color: #b2bec3;
+        }
+        #computers-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .computer {
+            background-color: white;
+            width: 200px;
+            height: 200px;
+            padding: 10px;
+            margin: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            margin-top:40px ;
+        }
+        .computer img {
+            width: 100%;
+            height: 100px;
+            object-fit: contain;
+        }
+        .computer-details {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 2px solid #ccc;
+            padding: 20px;
+            width: 250px;
+            height: 300px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            z-index: 10;
+            
+        }
+        .computer-details.open {
+            display: block;
+        }
+        .computer .details-btn {
+            background-color: #0984e3;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .computer .details-btn:hover {
+            background-color: #74b9ff;
+        }
+        .btt{
+            width:150px ;
+            padding: 10px;
+            height: 50px;
+           border-radius:5px ;
+            background-color: #ffe600;
+           
+
+        }
+        .hp1 {
+         display: block;
+        }
+        
+
+    </style>
+</head>
+<body>
+    <button class="btt" onclick="startShopping()">əsəs səyfə</button> 
+
+    <div class="container">
+        <div id="search-container">
+            <input type="text" id="search" placeholder="Поиск...">
+            <div id="computerList" class="brand hp1" onclick="showComputers('HP')">HP</div>
+            <div class="brand" onclick="showComputers('Lenovo')">Lenovo</div>
+            <div class="brand" onclick="showComputers('Acer')">Acer</div>
+            <div class="brand" onclick="showComputers('Sony')">Sony</div>
+            <div class="brand" onclick="showComputers('Asus')">Asus</div>
+            <div class="brand" onclick="showComputers('Dell')">Dell</div>
+            <div class="brand" onclick="showComputers('Macbook')">Macbook</div>
+            
+        </div>
+        <div class="st" id="computers-list">
+            <!-- Here will appear the computers -->
+        </div>
+    </div>
+
+    <div id="computer-details" class="computer-details">
+        <!-- Computer details will be shown here -->
+    </div>
+        <div id="computers-list">
+        </div>
+    </div>
+
+    <script>
+        const computersData = {
+            "HP": [
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+            { name: "HP Pavilion", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMTEXklAgxzJt0zx4qXDVoaL1VtN_oDY7tlw&s" },
+
+
+
+
+
+
+                ],
+            "Lenovo": [
+          
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+            { name: "Lenovo ThinkPad", specs: "Intel Core i7, 16GB RAM, 1TB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8tm4NEa4xwT-j_RMW8vwXtoyOPgZOlQU4Dw&s" },
+
+
+
+
+            ],
+            "Acer": [
+            
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+            { name: "Acer Aspire", specs: "Intel Core i3, 4GB RAM, 500GB HDD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUA44K04HwsgTuwxUe7gLYPzPgLGeuqg3-YQ&s" },
+
+
+            ],
+            "Sony": [
+           
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+            { name: "Sony VAIO", specs: "Intel Core i5, 8GB RAM, 256GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2Zl4HjjSiNrLRR5geVoyAV5ToZwR4mzYpoQ&s" },
+
+        ],
+            "Asus": [
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+            { name: "Asus ZenBook", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhSoqOP7tiuUJdeuTYvJi5HAAxf68YOxFdQQ&s" },
+
+
+            ],
+            "Dell": [
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+                { name: "Dell XPS", specs: "Intel Core i7, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyDqkX74schq508KZGWHzwDI3fp4IhO-Hxmw&s" },
+
+
+            ],
+            "Macbook": [
+          
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+            { name: "MacBook Pro", specs: "Apple M1, 16GB RAM, 512GB SSD", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTcd2FpuZujijI7Y3NZy-p7L3bQXh7CJOtzg&s" },
+
+
+            ]
+        };
+      
+            const computersList = document.getElementById('computers-list');
+            computersData.HP.forEach(computer => {
+                const div = document.createElement('div');
+                div.className = 'computer';
+                div.innerHTML = `
+                    <img src="${computer.img}" alt="${computer.name}">
+                    <h3>${computer.name}</h3>
+                    <p>${computer.specs}</p>
+                `;
+                computersList.appendChild(div);
+            });
+      
+
+        function displayComputers(computers) {
+            const computersList = document.getElementById('computers-list');
+            computersList.innerHTML = ''; // Очистить текущий список
+            computers.forEach(computer => {
+                const div = document.createElement('div');
+                div.className = 'computer';
+                div.innerHTML = `
+                    <img src="${computer.img}" alt="${computer.name}">
+                    <h3>${computer.name}</h3>
+                    <p>${computer.specs}</p>
+                `;
+                computersList.appendChild(div);
+            });
+        }
+
+        document.getElementById('search').addEventListener('input', function(event) {
+            const query = event.target.value.toLowerCase();
+            const filteredComputers = [];
+            for (let brand in computersData) {
+                const brandComputers = computersData[brand].filter(computer => 
+                    computer.name.toLowerCase().includes(query)
+                );
+                filteredComputers.push(...brandComputers);
+            }
+            displayComputers(filteredComputers);
+        });
+
+        function showComputers(brand) {
+            const computers = computersData[brand] || [];
+            displayComputers(computers);
+        }
+
+
+
+        function showComputers(brand) {
+            const computersList = document.getElementById('computers-list');
+            computersList.innerHTML = ''; // Clear previous results
+
+            const computers = computersData[brand];
+            computers.forEach(computer => {
+                const computerDiv = document.createElement('div');
+                computerDiv.classList.add('computer');
+                computerDiv.innerHTML = `
+                    <img src="${computer.img}" alt="${computer.name}">
+                    <h3>${computer.name}</h3>
+                    <p>${computer.specs}</p>
+                    <button class="details-btn" onclick="showDetails('${brand}', '${computer.name}')">Подробнее</button>
+                    
+                `;
+                computersList.appendChild(computerDiv);
+            });
+        }
+
+        function showDetails(brand, modelName) {
+            const computerDetails = document.getElementById('computer-details');
+            const computer = computersData[brand].find(c => c.name === modelName);
+            computerDetails.innerHTML = `
+           
+                <h3>${computer.name}</h3>
+                <img src="${computer.img}" alt="${computer.name}">
+                <p><strong>Характеристики:</strong> ${computer.specs}</p>
+                <p>Полное описание и другие детали...</p>
+                 <button  class="btt" onclick="closeWin()">çəxı</button>
+            `;
+            computerDetails.classList.add('open');
+        }
+
+        function startShopping(){
+            window.location.href = "index.html";
+        };
+
+
+        function closeWin() {
+            window.location.href = "index1000.html";
+}
+
+    </script>
+</body>
+</html>
